@@ -128,8 +128,11 @@ if (opcao == 1) { //Para cadastrar
             } else {
                 int removeId;
                 int pos = -1;
+
+                    printf("\n");
                     printf("Digite o ID do produto para remover: ");
                         scanf("%d", &removeId);
+                    printf("\n");
 
                 for (int i = 0; i < total; i++) {
                     if (produtos[i].id == removeId) {
@@ -138,13 +141,18 @@ if (opcao == 1) { //Para cadastrar
                 }
 
                 if (pos == -1) {
+                    printf("\n");
                     printf("Produto nao encontrado.\n");
+                    printf("\n");
+
                 } else {
                     for (int i = pos; i < total - 1; i++) {
                         produtos[i] = produtos[i + 1];
                     }
                     total--;
+                    printf("\n");
                     printf("Produto removido com sucesso!\n");
+                    printf("\n");
                 }
             }
 
