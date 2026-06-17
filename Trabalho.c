@@ -1,12 +1,20 @@
-#include<stdio.h>
+#include <stdio.h>
 #include <string.h>
-#include <windows.h>
 #include <stdlib.h>
 
 
+#ifdef _WIN32
+    #include <windows.h>
+    #define PAUSA(ms) Sleep(ms)
+    #define LIMPAR() system("cls")
+#else
+    #include <unistd.h>
+    #define PAUSA(ms) usleep((ms) * 1000)
+    #define LIMPAR() system("clear")
+#endif
+
 int main() {
 
-    
     struct Produto {
         int id;
         char nome[50];
@@ -19,7 +27,7 @@ int main() {
     int opcao;
 
     do {
-        
+
         printf("\n===== MENU DE CADASTRO =====\n");
         printf("1 - Cadastrar produto\n");
         printf("2 - Listar produtos\n");
@@ -27,255 +35,319 @@ int main() {
         printf("4 - Atualizar produto\n");
         printf("5 - Remover produto\n");
         printf("0 - Sair\n");
+        printf("=================================\n");
         printf("Escolha uma opcao: ");
-        scanf("%d", &opcao);
-        printf("\n");
-        Sleep(500);
-        system("cls");
+            if (scanf("%d", &opcao) != 1) {
+                printf("\nEntrada invalida!\n");
+                while (getchar() != '\n');
+                    opcao = -1;
+                PAUSA(500);
+                LIMPAR();
+            continue;
+        }
 
+        LIMPAR();
         if (opcao == 1) { //Para cadastrar
-            if (total >= 10) {
 
-                system("cls");
+            if (total >= 10) {
+                LIMPAR();
                     printf("====================================\n");
                     printf("Limite maximo de registros atingido.\n");
                     printf("====================================\n");
-                Sleep(1500);
+                PAUSA(1500);
 
             } else {
-                int novoId, existe = 0;
 
-                printf("Digite o ID do produto: ");
-                scanf("%d", &novoId);
+                    int novoId;
+                    int existe = 0;
 
-                if (novoId <= 0) {
-                    system("cls");
+                    printf("Digite o ID do produto: ");
+                        if (scanf("%d", &novoId) != 1) {
+                        while (getchar() != '\n');
+                    LIMPAR();
                         printf("=================\n");
                         printf(" ID invalido [!]\n");
                         printf("=================\n");
-                    Sleep(500);
-                } else {
-                    for (int i = 0; i < total; i++) {
-                        if (produtos[i].id == novoId) {
-                            existe = 1;
-                        }
+                    PAUSA(500);
+                    continue;
+
+                } if (novoId <= 0) {
+                    LIMPAR();
+                        printf("===========================\n");
+                        printf("ID deve ser maior que zero.\n");
+                        printf("===========================\n");
+                    PAUSA(500);
+                    continue;
+                }
+
+                for (int i = 0; i < total; i++) {
+
+                    if (produtos[i].id == novoId) {
+                        existe = 1;
                     }
+                }
 
-                    if (existe) {
-                        system("cls");
-                            printf("==========================\n");
-                            printf("Erro: ID ja cadastrado [!]\n");
-                            printf("==========================\n");
-                        Sleep(500);
+                if (existe) {
+                    LIMPAR();
+                        printf("==========================\n");
+                        printf("Erro: ID ja cadastrado [!]\n");
+                        printf("==========================\n");
+                    PAUSA(500);
+                    continue;
+                }
 
-                    } else {
-                        produtos[total].id = novoId;
+                produtos[total].id = novoId;
 
-                        printf("Digite o nome do produto: ");
-                            scanf(" %[^\n]", produtos[total].nome);
+                printf("Digite o nome do produto: ");
+                    scanf(" %[^\n]", produtos[total].nome);
 
-                        printf("Digite o preco: ");
-                            scanf("%f", &produtos[total].preco);
+                printf("Digite o preco: ");
+                    if (scanf("%f", &produtos[total].preco) != 1 || produtos[total].preco < 0) {
+                        while (getchar() != '\n');
+                        printf("==========================\n");
+                        printf("Preco invalido.[!]\n");
+                        printf("==========================\n");
+                    PAUSA(500);
+                    LIMPAR();
+                    continue;
+                }
 
-                        if (produtos[total].preco < 0) {
-                            printf("Preco invalido.\n");
-                        } else {
-                            printf("Digite a quantidade: ");
-                                scanf("%d", &produtos[total].quantidade);
+                printf("Digite a quantidade: ");
+                if (scanf("%d", &produtos[total].quantidade) != 1 || produtos[total].quantidade < 0) {
+                    while (getchar() != '\n');
+                    LIMPAR();
+                        printf("=====================\n");
+                        printf("Quantidade invalida [!]\n");
+                        printf("=====================\n");
+                    PAUSA(500);
+                    continue;
+                }
 
-                            if (produtos[total].quantidade < 0) {
-                                system("cls");
-                                    printf("=====================\n");
-                                    printf("Quantidade invalida [!]\n");
-                                    printf("=====================\n");
-                                Sleep(500);
-                            } else {
-                                total++;
-                                    printf("\n");
-                                    printf("================================\n");
-                                    printf("Produto cadastrado com sucesso !\n");
-                                    printf("================================\n");
-                                Sleep(1000);
-                                system("cls");
-
-                     }
-                 }
+                total++;
+                LIMPAR();
+                    printf("\n");
+                    printf("================================\n");
+                    printf("Produto cadastrado com sucesso !\n");
+                    printf("================================\n");
+                PAUSA(1200);
+                
             }
-         }
-    }
+        } else if (opcao == 2) { //para listar
 
-} else if (opcao == 2) { //para listar
-
-    if (total == 0) {
-        system("cls");
-            printf("===========================\n");
-            printf("Nenhum produto cadastrado.\n");
-            printf("===========================\n");
-        Sleep(500);
-    } else {
-        system("cls");
+            if (total == 0) {
+                LIMPAR();
+                    printf("===========================\n");
+                    printf("Nenhum produto cadastrado.\n");
+                    printf("===========================\n");
+                PAUSA(500);
+            }else {
+                LIMPAR();
             printf("\n  %-5s  %-20s  %10s  %6s\n","ID", "Nome", "Preco(R$)", "Qtd");
             printf("  %-5s  %-20s    %10s  %6s\n","-----","--------------------","----------","------");
-         for (int i = 0; i < total; i++) {
-            printf("  %-5d  %-20s  %10.2f  %6d\n", produtos[i].id, produtos[i].nome, produtos[i].preco, produtos[i].quantidade );            
-        }
-    printf("---------------------------------------------------------------------");
-        Sleep(2500);
-    }
+                for (int i = 0; i < total; i++) {
+                    printf("  %-5d  %-20s  %10.2f  %6d\n", produtos[i].id, produtos[i].nome, produtos[i].preco, produtos[i].quantidade );            
+            }
+                    printf("---------------------------------------------------------------------");
+                        PAUSA(3000);
+                }
+    }else if (opcao == 3) { //Para Buscar
 
-} else if (opcao == 3) { //Para Buscar
             if (total == 0) {
-
-                 system("cls");
+                LIMPAR();
                     printf("================================\n");
                     printf(" Produto nao encontrado.\n");
                     printf("================================\n");
-                Sleep(500);
-            } else {
+                PAUSA(500);
+            }
+            else {
 
                 int buscaId;
                 int encontrado = 0;
 
                 printf("Digite o ID para buscar: ");
-                scanf("%d", &buscaId);
+                    if (scanf("%d", &buscaId) != 1) {
+                        while (getchar() != '\n');
+                    printf("Entrada invalida.\n");
+                    PAUSA(500);
+                    LIMPAR();
+                    continue;
+                }
 
-                    for (int i = 0; i < total; i++) {
-                        if (produtos[i].id == buscaId) {
-                            system("cls");
-                            printf("\n----- Produto encontrado: -----\n");
-                            printf("Nome: %s  \n ", produtos[i].nome);
-                            printf("Preco: %.2f \n ", produtos[i].preco);
-                            printf("Quantidade: %d \n ", produtos[i].quantidade);
-                            printf("\n--------------------------------\n");
-                            Sleep(1500);
-                         encontrado = 1;
-                            }
+                for (int i = 0; i < total; i++) {
+                    if (produtos[i].id == buscaId) {
+                        printf("\n----- Produto encontrado: -----\n");
+                        printf("ID: %d\n", produtos[i].id);
+                        printf("Nome: %s\n", produtos[i].nome);
+                        printf("Preco: %.2f\n", produtos[i].preco);
+                        printf("Quantidade: %d\n", produtos[i].quantidade);
+                        printf("\n--------------------------------\n");
+                        PAUSA(2000);
+                        encontrado = 1;
+                        break;
                     }
+                }
+
                 if (!encontrado) {
-                    system("cls");
+                    LIMPAR();
                         printf("===========================\n");
                         printf("Produto nao encontrado.\n");
                         printf("===========================\n");
-                    Sleep(500);
-                }
+                    LIMPAR();
+                }                
             }
+        }
 
-} else if (opcao == 4) { // para Atualizar
+        else if (opcao == 4) { // para Atualizar
             if (total == 0) {
-                system("cls");
+                LIMPAR();
                     printf("=================================\n");
                     printf("Nao ha produtos para atualizar.\n");
                     printf("=================================\n");
-                Sleep(500);
-            } else {
-                int atualizaId; 
+                PAUSA(500);
+
+            }else {
+                int idAtualizar;
                 int encontrado = 0;
-                system("cls");
+                LIMPAR();
                 printf("Digite o ID do produto a atualizar: ");
-                    scanf("%d", &atualizaId);
+                if (scanf("%d", &idAtualizar) != 1) {
+                    while (getchar() != '\n');
+                        printf("Entrada invalida.\n");
+                        PAUSA(500);
+                        LIMPAR();
+                    continue;
+                }
 
                 for (int i = 0; i < total; i++) {
-                    if (produtos[i].id == atualizaId) {
+                    if (produtos[i].id == idAtualizar) {
+                        encontrado = 1;
 
                         printf("Novo nome: ");
                             scanf(" %[^\n]", produtos[i].nome);
 
                         printf("Novo preco: ");
-                            scanf("%f", &produtos[i].preco);
+                            if (scanf("%f", &produtos[i].preco) != 1 || produtos[i].preco < 0) {
+                                while (getchar() != '\n');
+                                    printf("Preco invalido.\n");
+                                    PAUSA(1000);
+                                    LIMPAR();
+                            break;
+                        }
 
                         printf("Nova quantidade: ");
-                            scanf("%d", &produtos[i].quantidade);
-
-                        system("cls");
+                            if (scanf("%d", &produtos[i].quantidade) != 1 || produtos[i].quantidade < 0) {
+                                while (getchar() != '\n');
+                                    printf("Quantidade invalida.\n");
+                                    PAUSA(1000);
+                                    LIMPAR();
+                            break;
+                        }
+                        LIMPAR();
                             printf("================================\n");
                             printf("Produto atualizado com sucesso!\n");
                             printf("================================\n");
-                        Sleep(500);
-                            encontrado = 1;
+                        PAUSA(500);
+                        
+                        break;
                     }
                 }
 
                 if (!encontrado) {
-                    system("cls");
-                        printf("===========================\n");
-                        printf("  Produto nao encontrado.\n");
-                        printf("===========================\n");
-                    Sleep(500);
+                    LIMPAR();
+                    printf("===========================\n");
+                    printf("Produto nao encontrado.\n");
+                    printf("===========================\n");
+                    PAUSA(500);
+                    
                 }
             }
-        
-        } else if (opcao == 5) { // Para REMOVER um prod
- if (total == 0) {
-                 system("cls");
+        }else if (opcao == 5) { // Para REMOVER um prod
+
+            if (total == 0) {
+                LIMPAR();
                     printf("=================================\n");
                     printf("  Nao ha produto para remover.\n");
                     printf("=================================\n");
+                PAUSA(1000);
+                
+            }else {
 
-            } else {
-                int removeId;
+                int idRemover;
                 int pos = -1;
 
-                    printf("\n");
-                    system("cls");
-                    printf("Digite o ID do produto para remover: ");
-                        scanf("%d", &removeId);
-                    printf("\n");
+                printf("\n");
+                LIMPAR();
+                printf("Digite o ID do produto: ");
+                    if (scanf("%d", &idRemover) != 1) {
+                        while (getchar() != '\n');
+                            printf("Entrada invalida.\n");
+                            PAUSA(500);
+                            LIMPAR();
+                    continue;
+                }
 
                 for (int i = 0; i < total; i++) {
-                    if (produtos[i].id == removeId) {
+                    if (produtos[i].id == idRemover) {
                         pos = i;
+                        break;
                     }
                 }
 
                 if (pos == -1) {
                     printf("\n");
-                    system("cls");
+                    LIMPAR();
                     printf("=================================\n");
                     printf("    Produto nao encontrado.\n");
                     printf("=================================\n");
                     printf("\n");
-
-                } else {
+                }else {
                     for (int i = pos; i < total - 1; i++) {
                         produtos[i] = produtos[i + 1];
                     }
                     total--;
-                    
-                    system("cls");
+
+                        LIMPAR();
                     printf("=================================\n");
                     printf("Produto removido com sucesso!\n");
                     printf("=================================\n");
                     printf("\n");
-                }
+                        PAUSA(1200);
+                        LIMPAR();
+                
+                }           
             }
+        }
 
-} else if (opcao == 0) {
+        else if (opcao == 0) {
+
             printf("S\t"); //Aqui foi por pura estetica :)
-                Sleep(300);
+                PAUSA(300);
             printf("A\t");
-                Sleep(300);
+                PAUSA(300);
             printf("I\t");
-                Sleep(300);
+                PAUSA(300);;
             printf("N\t");
-                Sleep(300);
+                PAUSA(300);
             printf("D\t");
-                Sleep(300);
+                PAUSA(300);
             printf("O\t");
-                Sleep(300);
+                PAUSA(300);
             printf(".\t");
-                Sleep(300);
+                PAUSA(300);
             printf(".\t");
-                Sleep(300);
+                PAUSA(300);
             printf(".\t");
-        } else {
+            PAUSA(1000);
+        }
+
+        else {
             printf("\n");
             printf("---------------------------------------\n");
             printf(" [!] Opcao invalida. Tente novamente.\n");
             printf("---------------------------------------\n");
-                Sleep(500);
+                PAUSA(1500);
+                LIMPAR();
         }
-
     } while (opcao != 0);
-
     return 0;
 }
