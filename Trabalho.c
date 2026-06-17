@@ -3,11 +3,11 @@
 #include <stdlib.h>
 
 
-#ifdef _WIN32
+#ifdef _WIN32  //caso seja no windows ele usa essa biblioteca <windows.h>
     #include <windows.h>
     #define PAUSA(ms) Sleep(ms)
     #define LIMPAR() system("cls")
-#else
+#else  // se não ele usa essa outra <unistd.h> :)
     #include <unistd.h>
     #define PAUSA(ms) usleep((ms) * 1000)
     #define LIMPAR() system("clear")
@@ -27,7 +27,7 @@ int main() {
     int opcao;
 
     do {
-
+                //menu de opções padrão
         printf("\n===== MENU DE CADASTRO =====\n");
         printf("1 - Cadastrar produto\n");
         printf("2 - Listar produtos\n");
@@ -37,7 +37,7 @@ int main() {
         printf("0 - Sair\n");
         printf("=================================\n");
         printf("Escolha uma opcao: ");
-            if (scanf("%d", &opcao) != 1) {
+            if (scanf("%d", &opcao) != 1) {   //teste para eceber valores positivos.
                 printf("\nEntrada invalida!\n");
                 while (getchar() != '\n');
                     opcao = -1;
@@ -52,7 +52,7 @@ int main() {
             if (total >= 10) {
                 LIMPAR();
                     printf("====================================\n");
-                    printf("Limite maximo de registros atingido.\n");
+                    printf("Limite maximo de registros atingido.\n"); // caso ja tenha feito os 10 cadastros.
                     printf("====================================\n");
                 PAUSA(1500);
 
@@ -66,7 +66,7 @@ int main() {
                         while (getchar() != '\n');
                     LIMPAR();
                         printf("=================\n");
-                        printf(" ID invalido [!]\n");
+                        printf(" ID invalido [!]\n"); //teste para numeros inteiros
                         printf("=================\n");
                     PAUSA(500);
                     continue;
@@ -74,14 +74,13 @@ int main() {
                 } if (novoId <= 0) {
                     LIMPAR();
                         printf("===========================\n");
-                        printf("ID deve ser maior que zero.\n");
+                        printf("ID deve ser maior que zero.\n"); // teste para nº > 0
                         printf("===========================\n");
                     PAUSA(500);
                     continue;
                 }
 
                 for (int i = 0; i < total; i++) {
-
                     if (produtos[i].id == novoId) {
                         existe = 1;
                     }
@@ -90,7 +89,7 @@ int main() {
                 if (existe) {
                     LIMPAR();
                         printf("==========================\n");
-                        printf("Erro: ID ja cadastrado [!]\n");
+                        printf("Erro: ID ja cadastrado [!]\n"); //caso repita o ID
                         printf("==========================\n");
                     PAUSA(500);
                     continue;
@@ -105,7 +104,8 @@ int main() {
                     if (scanf("%f", &produtos[total].preco) != 1 || produtos[total].preco < 0) {
                         while (getchar() != '\n');
                         printf("==========================\n");
-                        printf("Preco invalido.[!]\n");
+                        printf("Preco invalido.[!]\n"); //esses usuarios... tem que ficar ligeiro kkkkkkk
+                                                        // teste para preço negativo
                         printf("==========================\n");
                     PAUSA(500);
                     LIMPAR();
@@ -117,7 +117,7 @@ int main() {
                     while (getchar() != '\n');
                     LIMPAR();
                         printf("=====================\n");
-                        printf("Quantidade invalida [!]\n");
+                        printf("Quantidade invalida [!]\n"); //quantidade até 0 vai, porem > não passa
                         printf("=====================\n");
                     PAUSA(500);
                     continue;
@@ -137,7 +137,7 @@ int main() {
             if (total == 0) {
                 LIMPAR();
                     printf("===========================\n");
-                    printf("Nenhum produto cadastrado.\n");
+                    printf("Nenhum produto cadastrado.\n");  // caso n foi realizado cadastro
                     printf("===========================\n");
                 PAUSA(500);
             }else {
@@ -148,14 +148,14 @@ int main() {
                     printf("  %-5d  %-20s  %10.2f  %6d\n", produtos[i].id, produtos[i].nome, produtos[i].preco, produtos[i].quantidade );            
             }
                     printf("---------------------------------------------------------------------");
-                        PAUSA(3000);
+                        PAUSA(3000); //tempo para visualizar os intens cadastrados
                 }
     }else if (opcao == 3) { //Para Buscar
 
             if (total == 0) {
                 LIMPAR();
                     printf("================================\n");
-                    printf(" Produto nao encontrado.\n");
+                    printf(" Produto nao encontrado.\n"); //caso não ache prod
                     printf("================================\n");
                 PAUSA(500);
             }
@@ -166,7 +166,7 @@ int main() {
 
                 printf("Digite o ID para buscar: ");
                     if (scanf("%d", &buscaId) != 1) {
-                        while (getchar() != '\n');
+                        while (getchar() != '\n'); //outro teste de valor negativo
                     printf("Entrada invalida.\n");
                     PAUSA(500);
                     LIMPAR();
@@ -181,7 +181,7 @@ int main() {
                         printf("Preco: %.2f\n", produtos[i].preco);
                         printf("Quantidade: %d\n", produtos[i].quantidade);
                         printf("\n--------------------------------\n");
-                        PAUSA(2000);
+                        PAUSA(2000); //tempo para ver o item achado
                         encontrado = 1;
                         break;
                     }
@@ -190,7 +190,7 @@ int main() {
                 if (!encontrado) {
                     LIMPAR();
                         printf("===========================\n");
-                        printf("Produto nao encontrado.\n");
+                        printf("Produto nao encontrado.\n"); // caso não ache o ID
                         printf("===========================\n");
                     LIMPAR();
                 }                
@@ -212,7 +212,7 @@ int main() {
                 printf("Digite o ID do produto a atualizar: ");
                 if (scanf("%d", &idAtualizar) != 1) {
                     while (getchar() != '\n');
-                        printf("Entrada invalida.\n");
+                        printf("Entrada invalida.\n"); //teste caso tente att com valor negativo
                         PAUSA(500);
                         LIMPAR();
                     continue;
@@ -227,7 +227,7 @@ int main() {
 
                         printf("Novo preco: ");
                             if (scanf("%f", &produtos[i].preco) != 1 || produtos[i].preco < 0) {
-                                while (getchar() != '\n');
+                                while (getchar() != '\n');  // //teste caso tente att com valor negativo
                                     printf("Preco invalido.\n");
                                     PAUSA(1000);
                                     LIMPAR();
@@ -236,7 +236,7 @@ int main() {
 
                         printf("Nova quantidade: ");
                             if (scanf("%d", &produtos[i].quantidade) != 1 || produtos[i].quantidade < 0) {
-                                while (getchar() != '\n');
+                                while (getchar() != '\n'); // teste caso tente att com valor negativo
                                     printf("Quantidade invalida.\n");
                                     PAUSA(1000);
                                     LIMPAR();
@@ -279,7 +279,7 @@ int main() {
                 LIMPAR();
                 printf("Digite o ID do produto: ");
                     if (scanf("%d", &idRemover) != 1) {
-                        while (getchar() != '\n');
+                        while (getchar() != '\n');  //vai que tenta buscar um item negativo... 
                             printf("Entrada invalida.\n");
                             PAUSA(500);
                             LIMPAR();
